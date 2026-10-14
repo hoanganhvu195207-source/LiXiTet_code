@@ -1,0 +1,746 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Cinzel:wght@700&display=swap');
+
+:root {
+    --tet-red: #d32f2f;
+    --tet-red-dark: #6e0000;
+    --tet-red-deep: #400000;
+    --tet-gold: #ffd700;
+    --tet-gold-light: #fff275;
+    --tet-gold-dark: #b8860b;
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 215, 0, 0.35);
+    --gold-gradient: linear-gradient(135deg, #fff275 0%, #ffd700 50%, #b8860b 100%);
+    --red-gradient: linear-gradient(145deg, #b71c1c, #800000);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 40%, #a81c1c 0%, #700606 55%, #380101 100%);
+    font-family: 'Outfit', sans-serif;
+    color: #fff;
+    overflow-x: hidden;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Luxury Background Pattern */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0c3.5 20 20 20 40 20-20 0-20 20-20 40 0-20-20-20-40-20 20 0 20-20 20-40z' fill='%23ffd700' fill-opacity='0.04'/%3E%3C/svg%3E");
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Ambient Festive Glowing Orbs */
+body::after {
+    content: '';
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 650px;
+    height: 650px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.12) 0%, rgba(211, 47, 47, 0.08) 50%, transparent 75%);
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(40px);
+}
+
+/* Header Styles */
+.header-tet {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding-top: 35px;
+    animation: fadeInDown 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.title-tet {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 900;
+    background: var(--gold-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    display: inline-block;
+}
+
+.subtitle-tet {
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    color: rgba(255, 245, 210, 0.9);
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fan Display Styles */
+.fan-container {
+    position: fixed;
+    top: 54%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    height: 420px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 20;
+    perspective: 1200px;
+    transition: opacity 0.4s ease;
+}
+
+/* Smooth Entrance and Interactive States for Fan Cards */
+.fan-image {
+    position: absolute;
+    width: 215px;
+    height: 375px;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 3.5px solid #fff;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45), 0 0 15px rgba(255, 215, 0, 0.2);
+    transform-origin: bottom center;
+    transform: rotate(var(--fan-angle, 0deg)) translateY(40px) scale(0.92);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.6s ease,
+                box-shadow 0.35s ease,
+                filter 0.35s ease;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    will-change: transform, opacity;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.fan-image.loaded {
+    transform: rotate(var(--fan-angle, 0deg)) translateY(0px) scale(1);
+    opacity: 1;
+}
+
+/* Silky smooth hover: keeps the exact fan angle and lifts up gracefully with golden glow */
+.fan-image:hover {
+    z-index: 600 !important;
+    transform: rotate(var(--fan-angle, 0deg)) translateY(-45px) scale(1.15) !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.7);
+    filter: brightness(1.08) contrast(1.03);
+}
+
+/* When a card is picked, other cards gently retreat */
+.fan-container.has-picked .fan-image:not(.selected) {
+    opacity: 0.15;
+    transform: rotate(var(--fan-angle, 0deg)) translateY(60px) scale(0.88);
+    filter: blur(2px) grayscale(40%);
+    pointer-events: none;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease, filter 0.5s ease;
+}
+
+/* Selected card springs forward elegantly */
+.fan-image.selected {
+    z-index: 1000 !important;
+    transform: rotate(0deg) translateY(-85px) scale(1.22) !important;
+    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.75), 0 0 45px rgba(255, 215, 0, 0.95);
+    filter: brightness(1.12);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease !important;
+}
+
+/* Modal Overlay Styles - Smooth visibility and opacity */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 3, 3, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1500;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.modal-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    max-width: 95vw;
+}
+
+/* Flip Card Container */
+.flip-card {
+    width: 320px;
+    height: 550px;
+    perspective: 1400px;
+    cursor: grab;
+    transform: scale(0.85) translateY(30px);
+    opacity: 0;
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
+    will-change: transform, opacity;
+}
+
+.flip-card:active {
+    cursor: grabbing;
+}
+
+.modal-overlay.active .flip-card {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.95s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform-style: preserve-3d;
+    overflow: visible;
+}
+
+.flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 20px;
+    border: 4.5px solid #fff;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 25px rgba(255, 215, 0, 0.3);
+    background: var(--red-gradient);
+    overflow: hidden;
+}
+
+.flip-card-front img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Shiny Sheen Effect */
+.shine-overlay {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transform: skewX(-25deg);
+    pointer-events: none;
+    transition: left 0.7s ease;
+}
+
+.flip-card:hover .shine-overlay {
+    left: 140%;
+}
+
+/* Back of the envelope */
+.flip-card-back {
+    transform: rotateY(180deg) translateY(var(--env-offset, 0px));
+    z-index: 10;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+}
+
+.flip-card-back img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    display: block;
+}
+
+/* Money Note Style: Nestled inside the envelope slot */
+.money-img {
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: rotateY(180deg) translateX(50%) translateY(var(--money-offset, 0px)) scale(var(--money-scale, 1));
+    width: 72%;
+    height: auto;
+    max-height: 80%;
+    object-fit: contain;
+    z-index: 2;
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.45));
+    pointer-events: none;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+    border-radius: 8px;
+}
+
+/* Instruction & Pull Progress UI */
+.pull-instruction {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.5s ease 0.6s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s;
+    pointer-events: none;
+}
+
+.flip-card.flipped ~ .pull-instruction,
+.modal-overlay.active .pull-instruction {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.pull-arrow {
+    font-size: 1.4rem;
+    color: var(--tet-gold);
+    animation: bounceUp 1.2s infinite ease-in-out;
+    filter: drop-shadow(0 2px 8px rgba(255, 215, 0, 0.6));
+}
+
+@keyframes bounceUp {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.instruction-text {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--tet-gold-light);
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.hold-progress-bar {
+    width: 180px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.hold-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--gold-gradient);
+    border-radius: 10px;
+    box-shadow: 0 0 10px var(--tet-gold);
+    transition: width 0.05s linear;
+}
+
+.close-modal-hint {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: color 0.3s ease;
+    pointer-events: auto;
+}
+
+.close-modal-hint:hover {
+    color: var(--tet-gold);
+}
+
+/* =========================================
+   Final Grand Reveal Modal
+   ========================================= */
+.reveal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 2, 2, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2500;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
+    overflow: hidden;
+}
+
+.reveal-container.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.reveal-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 90vw;
+    max-height: 94vh;
+    padding: 10px 15px;
+    position: relative;
+    z-index: 10;
+    animation: revealPopIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes revealPopIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.6) translateY(40px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.reveal-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid var(--tet-gold);
+    border-radius: 30px;
+    color: var(--tet-gold);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+}
+
+.reveal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 900;
+    background: var(--gold-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 3px 15px rgba(255, 215, 0, 0.5);
+    margin-bottom: 8px;
+}
+
+.reveal-money-wrapper {
+    position: relative;
+    margin: 8px 0 12px;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.75), 0 0 30px rgba(255, 215, 0, 0.35);
+    transition: transform 0.4s ease;
+    animation: floatMoney 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes floatMoney {
+    0% { transform: translateY(0px) rotate(-1deg); }
+    100% { transform: translateY(-8px) rotate(1deg); }
+}
+
+.revealed-money {
+    width: min(52vw, 320px);
+    max-height: 24vh;
+    height: auto;
+    border-radius: 10px;
+    border: 3px solid #fff;
+    display: block;
+    object-fit: contain;
+}
+
+.reveal-amount {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+    font-weight: 700;
+    color: var(--tet-gold);
+    text-shadow: 0 2px 12px rgba(255, 215, 0, 0.6);
+    margin-bottom: 6px;
+}
+
+.reveal-wishes {
+    font-size: clamp(0.88rem, 1.6vw, 1.05rem);
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 440px;
+    line-height: 1.4;
+    margin-bottom: 16px;
+    font-weight: 300;
+    font-style: italic;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.reveal-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Button Stylings */
+.btn-tet {
+    background: var(--gold-gradient);
+    color: var(--tet-red-dark);
+    border: none;
+    padding: 12px 28px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-tet:hover {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 10px 28px rgba(255, 215, 0, 0.5);
+    filter: brightness(1.08);
+}
+
+.btn-tet:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.btn-secondary-tet {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1.5px solid rgba(255, 215, 0, 0.5);
+    color: #fff;
+    backdrop-filter: blur(8px);
+}
+
+.btn-secondary-tet:hover {
+    background: rgba(255, 215, 0, 0.2);
+    color: var(--tet-gold);
+    border-color: var(--tet-gold);
+}
+
+.close-reveal-btn {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    width: 46px;
+    height: 46px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1.5px solid var(--tet-gold);
+    color: var(--tet-gold);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 20;
+}
+
+.close-reveal-btn:hover {
+    background: var(--tet-gold);
+    color: var(--tet-red-dark);
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* Menu Styles */
+.menu-container {
+    position: fixed;
+    top: 25px;
+    left: 25px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    z-index: 3000;
+}
+
+.menu-trigger {
+    width: 48px;
+    height: 48px;
+    background: rgba(211, 47, 47, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid var(--tet-gold);
+    border-radius: 50%;
+    color: var(--tet-gold);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+.menu-trigger:hover {
+    transform: scale(1.1);
+    background: var(--tet-gold);
+    color: var(--tet-red-dark);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+}
+
+.menu-options {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-15px) scale(0.6);
+    transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-origin: left center;
+}
+
+.menu-container.active .menu-options {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0) scale(1);
+}
+
+.menu-item {
+    width: 44px;
+    height: 44px;
+    background: rgba(139, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid var(--tet-gold);
+    border-radius: 50%;
+    color: var(--tet-gold);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.menu-item:hover {
+    transform: scale(1.12);
+    background: var(--tet-gold);
+    color: var(--tet-red-dark);
+}
+
+.menu-container.active .menu-trigger {
+    transform: rotate(90deg) scale(0.95);
+    background: var(--tet-gold);
+    color: var(--tet-red-dark);
+}
+
+/* Long press feedback on menu trigger */
+.menu-trigger.holding {
+    animation: pulse-menu 0.4s infinite alternate ease-in-out;
+    background: var(--tet-gold) !important;
+    color: var(--tet-red-dark) !important;
+    box-shadow: 0 0 25px var(--tet-gold);
+}
+
+@keyframes pulse-menu {
+    from { transform: scale(1); }
+    to { transform: scale(1.2); }
+}
+
+.money-reveal {
+    animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    border-color: #fff !important;
+    overflow: hidden;
+}
+
+@keyframes pop-in {
+    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* Responsive Styles for Mobile */
+@media (max-width: 600px) {
+    .header-tet {
+        padding-top: 25px;
+    }
+
+    .fan-container {
+        top: 56%;
+        width: 260px;
+        height: 340px;
+    }
+
+    .fan-image {
+        width: 140px;
+        height: 245px;
+        border-width: 2.5px;
+        border-radius: 10px;
+    }
+
+    .fan-image:hover {
+        transform: rotate(var(--fan-angle, 0deg)) translateY(-30px) scale(1.12) !important;
+    }
+
+    .fan-image.selected {
+        transform: rotate(0deg) translateY(-60px) scale(1.18) !important;
+    }
+
+    .flip-card {
+        width: 260px;
+        height: 440px;
+    }
+
+    .revealed-money {
+        width: min(72vw, 270px);
+        max-height: 22vh;
+    }
+
+    .reveal-title {
+        font-size: 1.45rem;
+    }
+
+    .reveal-amount {
+        font-size: 1.35rem;
+    }
+
+    .reveal-wishes {
+        font-size: 0.86rem;
+        padding: 0 8px;
+        margin-bottom: 14px;
+    }
+
+    .menu-container {
+        top: 15px;
+        left: 15px;
+    }
+}
